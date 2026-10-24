@@ -58,7 +58,7 @@ The dashboard has two pages. The Power BI file (`Task3.pbix`) and the live Looke
 - Retention heatmap: cohorts as rows, quarters since the first order as columns. Darker blue means higher retention.
 - Line chart of lifetime value per customer for each cohort
 
-The cohort page does not change with the slicers, because it is based on separate cohort tables that cover all customers.
+The cohort page has two drop-downs (one for the heatmap and one for the lifetime value chart) so you can pick a single cohort. The Year, country and product line slicers do not change this page, because it uses separate cohort tables that cover all customers.
 
 Screenshots:
 
