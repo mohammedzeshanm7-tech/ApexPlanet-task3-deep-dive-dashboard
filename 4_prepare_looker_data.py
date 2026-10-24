@@ -9,8 +9,9 @@ df = pd.read_csv("sales_data_for_powerbi.csv")
 # Total number of orders placed by each customer (over the whole period)
 orders_per_customer = df.groupby("customerNumber")["orderNumber"].nunique()
 
-# Add this number to every row of that customer
+
 df["CustomerOrderCount"] = df["customerNumber"].map(orders_per_customer)
+
 
 df.to_csv("sales_data_for_looker.csv", index=False)
 print("Rows:", len(df))
