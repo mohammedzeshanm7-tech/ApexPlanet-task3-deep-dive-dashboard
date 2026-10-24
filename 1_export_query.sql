@@ -1,5 +1,3 @@
--- Run this in MySQL Workbench on the classicmodels database.
--- Then use "Export recordset to an external file" (CSV) and save as sales_data.csv
 USE classicmodels;
 
 SELECT
