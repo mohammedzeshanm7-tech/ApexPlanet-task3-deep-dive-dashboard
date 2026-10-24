@@ -4,7 +4,7 @@
 
 import pandas as pd
 
-# ---------- 1. Load data ----------
+# 1 Load data
 df = pd.read_csv("sales_data.csv")
 df["orderDate"] = pd.to_datetime(df["orderDate"])
 
@@ -17,10 +17,9 @@ df["QuarterNo"] = df["orderDate"].dt.quarter
 df["Quarter"] = df["Year"].astype(str) + "Q" + df["QuarterNo"].astype(str)
 
 # A running quarter number so we can subtract quarters easily
-# Example: 2003Q1 = 2003*4+1 = 8013, 2003Q2 = 8014, 2004Q1 = 8017
 df["QuarterNumber"] = df["Year"] * 4 + df["QuarterNo"]
 
-# ---------- 2. Core KPIs ----------
+# 2 Core KPIs
 total_revenue = df["sales"].sum()
 total_orders = df["orderNumber"].nunique()
 total_customers = df["customerNumber"].nunique()
@@ -40,7 +39,7 @@ kpi = pd.DataFrame({
 print(kpi)
 kpi.to_csv("kpi_summary.csv", index=False)
 
-# ---------- 3. Cohort analysis ----------
+# 3 Cohort analysis
 # Cohort = the quarter in which a customer placed their FIRST order
 
 # Sort by date and keep only the first order of each customer
@@ -57,13 +56,13 @@ df["QuartersSinceFirst"] = df["QuarterNumber"] - df["CohortQuarterNumber"]
 # Number of customers in each cohort
 cohort_size = first_orders["Cohort"].value_counts()
 
-# ----- Retention: how many customers of each cohort ordered in each quarter -----
+# Retention: how many customers of each cohort ordered in each quarter
 retention = df.groupby(["Cohort", "QuartersSinceFirst"])["customerNumber"].nunique().reset_index()
 retention.columns = ["Cohort", "QuartersSinceFirst", "ActiveCustomers"]
 retention["CohortSize"] = retention["Cohort"].map(cohort_size)
 retention["RetentionRate"] = (retention["ActiveCustomers"] / retention["CohortSize"] * 100).round(1)
 
-# ----- Lifetime value: revenue of each cohort in each quarter -----
+# Lifetime value: revenue of each cohort in each quarter
 revenue = df.groupby(["Cohort", "QuartersSinceFirst"])["sales"].sum().reset_index()
 revenue = revenue.sort_values(["Cohort", "QuartersSinceFirst"])
 
@@ -85,7 +84,7 @@ print(retention.pivot(index="Cohort", columns="QuartersSinceFirst", values="Rete
 print("\nLTV per customer:")
 print(revenue.pivot(index="Cohort", columns="QuartersSinceFirst", values="LTVPerCustomer"))
 
-# ---------- 4. Save a clean copy for Power BI ----------
+# 4 Save a clean copy for Power BI
 df = df.drop(columns=["QuarterNo", "QuarterNumber", "CohortQuarterNumber"])
 df.to_csv("sales_data_for_powerbi.csv", index=False)
 print("\nDone. Files saved.")
